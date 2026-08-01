@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Countdown Timer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12151B;
+    --panel:#1B1F27;
+    --panel-raised:#20242E;
+    --line:#2C313D;
+    --text:#EDEFF3;
+    --muted:#7C8494;
+    --teal:#4FD1C5;
+    --alert:#FF5C5C;
+    --radius:16px;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:36px 18px;
+  }
+
+  .app{
+    width:100%;
+    max-width:420px;
+  }
+
+  .top-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+    text-align:center;
+    margin-bottom:20px;
+  }
+
+  .mode-switch{
+    display:flex;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:4px;
+    margin-bottom:22px;
+  }
+  .mode-switch button{
+    flex:1;
+    background:none;
+    border:none;
+    color:var(--muted);
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:13px;
+    padding:9px 0;
+    border-radius:7px;
+    cursor:pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .mode-switch button.active{
+    background:var(--panel-raised);
+    color:var(--text);
+  }
+
+  .card{
+    background: linear-gradient(165deg, var(--panel) 0%, #171A21 100%);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:34px 28px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  /* ring + digits */
+  .ring-wrap{
+    position:relative;
+    width:240px;
+    height:240px;
+    margin-bottom:26px;
+  }
+  .ring-wrap svg{ width:100%; height:100%; transform:rotate(-90deg); }
+  .ring-bg{ fill:none; stroke:var(--line); stroke-width:8; }
+  .ring-fg{
+    fill:none;
+    stroke:var(--teal);
+    stroke-width:8;
+    stroke-linecap:round;
+    transition: stroke-dashoffset 0.3s linear, stroke 0.3s ease;
+  }
+  .ring-wrap.finished .ring-fg{ stroke:var(--alert); }
+
+  .digits{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+  .digits .time{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:40px;
+    letter-spacing:-0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .digits .sub{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--muted);
+    margin-top:6px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    text-align:center;
+    padding:0 20px;
+  }
+
+  /* duration mode inputs */
+  .duration-inputs{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+    width:100%;
+  }
+  .duration-inputs .field{ flex:1; display:flex; flex-direction:column; gap:6px; }
+  .duration-inputs label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    text-align:center;
+  }
+  .duration-inputs input{
+    background:var(--panel-raised);
+    border:1.5px solid var(--line);
+    color:var(--text);
+    font-family:'JetBrains Mono', monospace;
+    font-size:18px;
+    text-align:center;
+    padding:10px 0;
+    border-radius:8px;
+    outline:none;
+    transition: border-color 0.15s ease;
+  }
+  .duration-inputs input:focus{ border-color:var(--teal); }
+
+  .presets{
+    display:flex;
+    gap:8px;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .presets button{
+    background:var(--panel-raised);
+    border:1px solid var(--line);
+    color:var(--muted);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    padding:7px 12px;
+    border-radius:20px;
+    cursor:pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .presets button:hover{ border-color:var(--teal); color:var(--teal); }
+
+  /* date mode input */
+  .date-input-wrap{
+    width:100%;
+    margin-bottom:20px;
+  }
+  .date-input-wrap label{
+    display:block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:8px;
+    text-align:center;
+  }
+  .date-input-wrap input{
+    width:100%;
+    background:var(--panel-raised);
+    border:1.5px solid var(--line);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    font-size:14px;
+    padding:11px 12px;
+    border-radius:8px;
+    outline:none;
+    transition: border-color 0.15s ease;
+    color-scheme: dark;
+  }
+  .date-input-wrap input:focus{ border-color:var(--teal); }
+
+  .controls{
+    display:flex;
+    gap:10px;
+    width:100%;
+  }
+  .controls button{
+    flex:1;
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:14px;
+    padding:12px 0;
+    border-radius:10px;
+    cursor:pointer;
+    border:1.5px solid var(--line);
+    background:var(--panel-raised);
+    color:var(--text);
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .controls button.primary{
+    background:var(--teal);
+    color:#0E1116;
+    border-color:var(--teal);
+  }
+  .controls button.primary:hover{ background:#6be0d5; }
+  .controls button.primary:disabled{ background:var(--muted); border-color:var(--muted); cursor:default; }
+  .controls button:not(.primary):hover{ border-color:var(--teal); color:var(--teal); }
+
+  .hidden{ display:none !important; }
+
+  footer{
+    text-align:center;
+    margin-top:18px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    color:var(--muted);
+  }
+
+  @media (max-width:420px){
+    .ring-wrap{ width:200px; height:200px; }
+    .digits .time{ font-size:32px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="top-label">Countdown Timer</div>
+
+  <div class="mode-switch">
+    <button type="button" id="modeDuration" class="active">Timer</button>
+    <button type="button" id="modeDate">Countdown to Date</button>
+  </div>
+
+  <div class="card">
+
+    <div class="ring-wrap" id="ringWrap">
+      <svg viewBox="0 0 100 100">
+        <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
+        <circle class="ring-fg" id="ringFg" cx="50" cy="50" r="44" stroke-dasharray="276.5" stroke-dashoffset="0"></circle>
+      </svg>
+      <div class="digits">
+        <div class="time" id="timeDisplay">00:00:00</div>
+        <div class="sub" id="subLabel">Set a duration and press start</div>
+      </div>
+    </div>
+
+    <!-- Duration mode -->
+    <div id="durationPanel">
+      <div class="duration-inputs">
+        <div class="field">
+          <label>Hours</label>
+          <input type="number" id="inpHours" min="0" max="99" value="0" />
+        </div>
+        <div class="field">
+          <label>Minutes</label>
+          <input type="number" id="inpMinutes" min="0" max="59" value="5" />
+        </div>
+        <div class="field">
+          <label>Seconds</label>
+          <input type="number" id="inpSeconds" min="0" max="59" value="0" />
+        </div>
+      </div>
+      <div class="presets">
+        <button type="button" data-secs="60">1 min</button>
+        <button type="button" data-secs="300">5 min</button>
+        <button type="button" data-secs="600">10 min</button>
+        <button type="button" data-secs="1500">25 min</button>
+        <button type="button" data-secs="3600">1 hr</button>
+      </div>
+    </div>
+
+    <!-- Date mode -->
+    <div id="datePanel" class="hidden date-input-wrap">
+      <label for="inpDate">Target date &amp; time</label>
+      <input type="datetime-local" id="inpDate" />
+    </div>
+
+    <div class="controls">
+      <button type="button" id="resetBtn">Reset</button>
+      <button type="button" id="startBtn" class="primary">Start</button>
+    </div>
+
+  </div>
+
+  <footer>Runs fully client-side — no data leaves your browser.</footer>
+</div>
+
+<script>
+  const modeDurationBtn = document.getElementById('modeDuration');
+  const modeDateBtn = document.getElementById('modeDate');
+  const durationPanel = document.getElementById('durationPanel');
+  const datePanel = document.getElementById('datePanel');
+
+  const inpHours = document.getElementById('inpHours');
+  const inpMinutes = document.getElementById('inpMinutes');
+  const inpSeconds = document.getElementById('inpSeconds');
+  const inpDate = document.getElementById('inpDate');
+  const presets = document.querySelectorAll('.presets button');
+
+  const startBtn = document.getElementById('startBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const timeDisplay = document.getElementById('timeDisplay');
+  const subLabel = document.getElementById('subLabel');
+  const ringWrap = document.getElementById('ringWrap');
+  const ringFg = document.getElementById('ringFg');
+
+  const CIRC = 2 * Math.PI * 44; // ~276.46
+  ringFg.setAttribute('stroke-dasharray', CIRC.toFixed(2));
+
+  let mode = 'duration'; // 'duration' | 'date'
+  let totalSeconds = 0;      // for duration mode: total configured duration
+  let remainingSeconds = 0;  // for duration mode: countdown state
+  let targetTimestamp = null; // for date mode: ms epoch target
+  let startTimestamp = null;  // for date mode: ms epoch when start was pressed (for ring progress)
+  let intervalId = null;
+  let running = false;
+
+  function pad(n){ return String(n).padStart(2, '0'); }
+
+  function formatHMS(totalSecs){
+    const s = Math.max(0, Math.floor(totalSecs));
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    return `${pad(h)}:${pad(m)}:${pad(sec)}`;
+  }
+
+  function setRingProgress(fraction){
+    // fraction: 0 = empty, 1 = full
+    const clamped = Math.min(1, Math.max(0, fraction));
+    ringFg.style.strokeDashoffset = (CIRC * (1 - clamped)).toFixed(2);
+  }
+
+  function switchMode(next){
+    if(running) stopTimer(false);
+    mode = next;
+    modeDurationBtn.classList.toggle('active', mode === 'duration');
+    modeDateBtn.classList.toggle('active', mode === 'date');
+    durationPanel.classList.toggle('hidden', mode !== 'duration');
+    datePanel.classList.toggle('hidden', mode !== 'date');
+    resetDisplay();
+  }
+
+  function resetDisplay(){
+    ringWrap.classList.remove('finished');
+    if(mode === 'duration'){
+      const h = parseInt(inpHours.value) || 0;
+      const m = parseInt(inpMinutes.value) || 0;
+      const s = parseInt(inpSeconds.value) || 0;
+      totalSeconds = h * 3600 + m * 60 + s;
+      remainingSeconds = totalSeconds;
+      timeDisplay.textContent = formatHMS(remainingSeconds);
+      subLabel.textContent = totalSeconds > 0 ? 'Ready to start' : 'Set a duration and press start';
+      setRingProgress(0);
+    }else{
+      timeDisplay.textContent = '00:00:00';
+      subLabel.textContent = 'Pick a target date & time';
+      setRingProgress(0);
+    }
+    startBtn.textContent = 'Start';
+    startBtn.disabled = false;
+  }
+
+  function tickDuration(){
+    remainingSeconds -= 1;
+    if(remainingSeconds <= 0){
+      remainingSeconds = 0;
+      timeDisplay.textContent = formatHMS(0);
+      setRingProgress(1);
+      finish();
+      return;
+    }
+    timeDisplay.textContent = formatHMS(remainingSeconds);
+    const elapsedFraction = totalSeconds > 0 ? (totalSeconds - remainingSeconds) / totalSeconds : 0;
+    setRingProgress(elapsedFraction);
+  }
+
+  function tickDate(){
+    const now = Date.now();
+    const diff = targetTimestamp - now;
+    if(diff <= 0){
+      timeDisplay.textContent = formatHMS(0);
+      setRingProgress(1);
+      finish();
+      return;
+    }
+    timeDisplay.textContent = formatHMS(diff / 1000);
+    const totalSpan = targetTimestamp - startTimestamp;
+    const elapsedFraction = totalSpan > 0 ? (now - startTimestamp) / totalSpan : 0;
+    setRingProgress(elapsedFraction);
+  }
+
+  function finish(){
+    stopTimer(false);
+    ringWrap.classList.add('finished');
+    subLabel.textContent = "Time's up!";
+    startBtn.textContent = 'Start';
+    document.title = "⏰ Time's up! — Countdown Timer";
+    playChime();
+  }
+
+  function playChime(){
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const now = ctx.currentTime;
+      [880, 1108, 1318].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0, now + i * 0.18);
+        gain.gain.linearRampToValueAtTime(0.18, now + i * 0.18 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.18 + 0.35);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(now + i * 0.18);
+        osc.stop(now + i * 0.18 + 0.4);
+      });
+    }catch(e){ /* audio not available — fail silently */ }
+  }
+
+  function startTimer(){
+    if(mode === 'duration'){
+      if(remainingSeconds <= 0){
+        const h = parseInt(inpHours.value) || 0;
+        const m = parseInt(inpMinutes.value) || 0;
+        const s = parseInt(inpSeconds.value) || 0;
+        totalSeconds = h * 3600 + m * 60 + s;
+        remainingSeconds = totalSeconds;
+      }
+      if(totalSeconds <= 0){
+        subLabel.textContent = 'Set a duration greater than zero';
+        return;
+      }
+      ringWrap.classList.remove('finished');
+      subLabel.textContent = 'Counting down…';
+      running = true;
+      startBtn.textContent = 'Pause';
+      intervalId = setInterval(tickDuration, 1000);
+    }else{
+      if(!inpDate.value){
+        subLabel.textContent = 'Pick a target date & time first';
+        return;
+      }
+      const target = new Date(inpDate.value).getTime();
+      if(isNaN(target) || target <= Date.now()){
+        subLabel.textContent = 'Please choose a time in the future';
+        return;
+      }
+      targetTimestamp = target;
+      startTimestamp = Date.now();
+      ringWrap.classList.remove('finished');
+      subLabel.textContent = 'Counting down…';
+      running = true;
+      startBtn.textContent = 'Pause';
+      intervalId = setInterval(tickDate, 1000);
+      tickDate();
+    }
+  }
+
+  function stopTimer(keepLabel){
+    running = false;
+    if(intervalId){ clearInterval(intervalId); intervalId = null; }
+    startBtn.textContent = 'Resume';
+    if(!keepLabel) startBtn.textContent = 'Start';
+  }
+
+  startBtn.addEventListener('click', function(){
+    if(running){
+      stopTimer(true);
+      subLabel.textContent = 'Paused';
+    }else{
+      startTimer();
+    }
+  });
+
+  resetBtn.addEventListener('click', function(){
+    stopTimer(false);
+    document.title = 'Countdown Timer';
+    resetDisplay();
+  });
+
+  modeDurationBtn.addEventListener('click', () => switchMode('duration'));
+  modeDateBtn.addEventListener('click', () => switchMode('date'));
+
+  presets.forEach(btn => {
+    btn.addEventListener('click', function(){
+      const secs = parseInt(btn.dataset.secs);
+      inpHours.value = Math.floor(secs / 3600);
+      inpMinutes.value = Math.floor((secs % 3600) / 60);
+      inpSeconds.value = secs % 60;
+      resetDisplay();
+    });
+  });
+
+  [inpHours, inpMinutes, inpSeconds].forEach(inp => {
+    inp.addEventListener('change', () => { if(!running) resetDisplay(); });
+  });
+
+  // default the date picker to 1 hour from now, for convenience
+  (function initDateDefault(){
+    const d = new Date(Date.now() + 60 * 60 * 1000);
+    d.setSeconds(0, 0);
+    const iso = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0,16);
+    inpDate.value = iso;
+  })();
+
+  resetDisplay();
+</script>
+
+</body>
+</html>
