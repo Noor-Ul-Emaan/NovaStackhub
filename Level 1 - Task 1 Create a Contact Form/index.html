@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Get in Touch — Contact</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1F2A44;
+    --paper:#EEF1F6;
+    --paper-raised:#FFFFFF;
+    --stamp:#C1421B;
+    --sage:#3F6B4F;
+    --muted:#667085;
+    --line:#D3D9E3;
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:48px 20px;
+  }
+
+  .card{
+    width:100%;
+    max-width:960px;
+    background:var(--paper-raised);
+    border-radius:var(--radius);
+    box-shadow: 0 1px 2px rgba(31,42,68,0.06), 0 20px 60px -20px rgba(31,42,68,0.25);
+    display:grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    overflow:hidden;
+    border:1px solid var(--line);
+  }
+
+  /* LEFT: letter panel */
+  .panel{
+    background: linear-gradient(180deg, #1F2A44 0%, #253352 100%);
+    color:#EEF1F6;
+    padding:44px 38px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    overflow:hidden;
+  }
+  .panel::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:
+      repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 34px);
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#9DAFCF;
+    margin:0 0 18px;
+  }
+  .panel h1{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-style:italic;
+    font-size:38px;
+    line-height:1.15;
+    margin:0 0 18px;
+    letter-spacing:-0.01em;
+  }
+  .panel p{
+    font-size:14.5px;
+    line-height:1.65;
+    color:#C4CEE0;
+    max-width:34ch;
+    margin:0;
+  }
+
+  /* Postmark signature element */
+  .postmark{
+    position:relative;
+    width:132px;
+    height:132px;
+    margin-top:36px;
+  }
+  .postmark svg{ width:100%; height:100%; }
+  .postmark-ring{
+    animation: spin 34s linear infinite;
+    transform-origin: 66px 66px;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+  .postmark-mark{
+    opacity:0.35;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform-origin: 66px 66px;
+  }
+  .postmark.sent .postmark-mark{
+    opacity:1;
+    transform: scale(1.04);
+  }
+  .postmark.sent .postmark-ring{
+    animation-duration: 3s;
+  }
+
+  /* RIGHT: form */
+  .form-wrap{
+    padding:44px 42px;
+    display:flex;
+    flex-direction:column;
+  }
+  .form-head{ margin-bottom:26px; }
+  .form-head h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:22px;
+    margin:0 0 6px;
+  }
+  .form-head span{
+    font-size:13.5px;
+    color:var(--muted);
+  }
+
+  form{ display:flex; flex-direction:column; gap:18px; }
+
+  .field{ display:flex; flex-direction:column; gap:7px; }
+  .field label{
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:0.01em;
+    color:var(--ink);
+  }
+  .field .hint{
+    font-size:11.5px;
+    color:var(--muted);
+    font-weight:400;
+  }
+  .field input,
+  .field textarea{
+    font-family:'Inter', sans-serif;
+    font-size:14.5px;
+    padding:11px 13px;
+    border-radius:9px;
+    border:1.5px solid var(--line);
+    background:#FBFCFE;
+    color:var(--ink);
+    outline:none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field textarea{ resize:vertical; min-height:96px; font-family:'Inter', sans-serif; }
+  .field input:focus,
+  .field textarea:focus{
+    border-color:#1F2A44;
+    box-shadow: 0 0 0 3px rgba(31,42,68,0.10);
+  }
+  .field input:focus-visible,
+  .field textarea:focus-visible,
+  button:focus-visible{
+    outline: 2px solid var(--stamp);
+    outline-offset: 2px;
+  }
+  .field.error input,
+  .field.error textarea{
+    border-color:var(--stamp);
+  }
+  .error-msg{
+    font-size:11.5px;
+    color:var(--stamp);
+    min-height:14px;
+  }
+
+  .row{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+
+  button[type="submit"]{
+    margin-top:6px;
+    background:var(--ink);
+    color:#EEF1F6;
+    border:none;
+    border-radius:9px;
+    padding:13px 20px;
+    font-family:'Inter', sans-serif;
+    font-size:14.5px;
+    font-weight:600;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  button[type="submit"]:hover{ background:#141d33; }
+  button[type="submit"]:active{ transform: translateY(1px); }
+  button[type="submit"]:disabled{
+    background:#9AA5B8;
+    cursor:default;
+  }
+
+  .status{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13.5px;
+    font-weight:500;
+    color:var(--sage);
+    min-height:20px;
+    margin-top:2px;
+  }
+  .status[hidden]{ display:none; }
+
+  @media (max-width: 720px){
+    .card{ grid-template-columns: 1fr; }
+    .panel{ padding:32px 28px; }
+    .panel h1{ font-size:30px; }
+    .row{ grid-template-columns: 1fr; }
+    .form-wrap{ padding:32px 28px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .postmark-ring{ animation:none; }
+    .postmark-mark{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="panel">
+    <div>
+      <p class="eyebrow">Correspondence</p>
+      <h1>Say what's<br/>on your mind.</h1>
+      <p>Drop a note below — a question, a project, or just a hello. It reaches an actual inbox, not a queue.</p>
+    </div>
+
+    <div class="postmark" id="postmark" aria-hidden="true">
+      <svg viewBox="0 0 132 132">
+        <g class="postmark-ring">
+          <circle cx="66" cy="66" r="58" fill="none" stroke="#5B6D93" stroke-width="1" stroke-dasharray="1 6" stroke-linecap="round"/>
+        </g>
+        <g class="postmark-mark">
+          <circle cx="66" cy="66" r="44" fill="none" stroke="#C1421B" stroke-width="1.5"/>
+          <circle cx="66" cy="66" r="38" fill="none" stroke="#C1421B" stroke-width="1"/>
+          <text x="66" y="60" text-anchor="middle" fill="#C1421B" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="2">SENT</text>
+          <text id="postmarkDate" x="66" y="76" text-anchor="middle" fill="#C1421B" font-family="IBM Plex Mono, monospace" font-size="9">— · —</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="form-wrap">
+    <div class="form-head">
+      <h2>Contact form</h2>
+      <span>Fields marked with an asterisk are required.</span>
+    </div>
+
+    <form id="contactForm" novalidate>
+      <div class="row">
+        <div class="field" id="field-name">
+          <label for="name">Name *</label>
+          <input type="text" id="name" name="name" placeholder="Jordan Ali" autocomplete="name" />
+          <div class="error-msg" id="err-name"></div>
+        </div>
+        <div class="field" id="field-email">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" />
+          <div class="error-msg" id="err-email"></div>
+        </div>
+      </div>
+
+      <div class="field" id="field-subject">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="subject" placeholder="What's this about?" />
+        <div class="error-msg" id="err-subject"></div>
+      </div>
+
+      <div class="field" id="field-message">
+        <label for="message">Message *</label>
+        <textarea id="message" name="message" placeholder="Write your message here..."></textarea>
+        <div class="error-msg" id="err-message"></div>
+      </div>
+
+      <button type="submit" id="submitBtn">Send message</button>
+      <div class="status" id="status" hidden></div>
+    </form>
+  </div>
+
+</div>
+
+<script>
+  const form = document.getElementById('contactForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const statusEl = document.getElementById('status');
+  const postmark = document.getElementById('postmark');
+  const postmarkDate = document.getElementById('postmarkDate');
+
+  const fields = {
+    name: { el: document.getElementById('name'), wrap: document.getElementById('field-name'), err: document.getElementById('err-name') },
+    email: { el: document.getElementById('email'), wrap: document.getElementById('field-email'), err: document.getElementById('err-email') },
+    message: { el: document.getElementById('message'), wrap: document.getElementById('field-message'), err: document.getElementById('err-message') }
+  };
+
+  function setError(key, msg){
+    fields[key].wrap.classList.toggle('error', !!msg);
+    fields[key].err.textContent = msg || '';
+  }
+
+  function validEmail(v){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+
+  function validate(){
+    let ok = true;
+
+    if(!fields.name.el.value.trim()){
+      setError('name', 'Enter your name.');
+      ok = false;
+    } else { setError('name', ''); }
+
+    if(!fields.email.el.value.trim()){
+      setError('email', 'Enter your email.');
+      ok = false;
+    } else if(!validEmail(fields.email.el.value.trim())){
+      setError('email', 'That email doesn\'t look right.');
+      ok = false;
+    } else { setError('email', ''); }
+
+    if(!fields.message.el.value.trim()){
+      setError('message', 'Write a short message.');
+      ok = false;
+    } else { setError('message', ''); }
+
+    return ok;
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(!validate()) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+    statusEl.hidden = true;
+
+    // Simulated send — replace this block with a real request
+    // (e.g. fetch('/api/contact', { method:'POST', body: new FormData(form) }))
+    // to a backend, form service (Formspree, Netlify Forms, etc.), or your
+    // own mail-sending endpoint.
+    setTimeout(function(){
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send another';
+      statusEl.hidden = false;
+      statusEl.textContent = 'Message sent — thanks for reaching out.';
+
+      const now = new Date();
+      const stamp = now.toLocaleDateString('en-US', { day:'2-digit', month:'short', year:'2-digit' }).toUpperCase();
+      postmarkDate.textContent = stamp;
+      postmark.classList.add('sent');
+
+      form.reset();
+    }, 700);
+  });
+
+  [fields.name, fields.email, fields.message].forEach(f=>{
+    f.el.addEventListener('input', ()=> setError(Object.keys(fields).find(k=>fields[k]===f), ''));
+  });
+</script>
+
+</body>
+</html>
