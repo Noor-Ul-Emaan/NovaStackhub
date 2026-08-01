@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Noor-ul-Eman — Personal Website</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0F1B2D;
+    --ink-soft:#16263D;
+    --line:#3E6588;
+    --line-dim:#294A66;
+    --paper:#EAF2FB;
+    --amber:#E8A33D;
+    --muted:#7C93AD;
+    --radius:10px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+  }
+
+  .grid-bg{
+    background-image:
+      linear-gradient(var(--line-dim) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-dim) 1px, transparent 1px);
+    background-size: 36px 36px;
+    background-position: -1px -1px;
+  }
+
+  a{ color:inherit; }
+
+  .wrap{ max-width:980px; margin:0 auto; padding:0 28px; }
+
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  nav{
+    position:sticky; top:0; z-index:20;
+    background:rgba(15,27,45,0.88);
+    backdrop-filter: blur(6px);
+    border-bottom:1px solid var(--line-dim);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:62px;
+  }
+  .brand{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:16px;
+    letter-spacing:-0.01em;
+  }
+  .brand span{ color:var(--amber); }
+  .navlinks{ display:flex; gap:26px; }
+  .navlinks a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-decoration:none;
+    color:var(--muted);
+    transition:color 0.15s ease;
+  }
+  .navlinks a:hover{ color:var(--paper); }
+
+  .hero{
+    padding:90px 0 80px;
+    position:relative;
+  }
+  .hero .tag-line{
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:22px;
+  }
+  .tag-line .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--amber);
+  }
+  .hero h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:clamp(40px, 6vw, 64px);
+    line-height:1.05;
+    margin:0 0 20px;
+    letter-spacing:-0.02em;
+  }
+  .hero h1 .accent{ color:var(--amber); }
+  .hero .role{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:15px;
+    color:#B9CBE0;
+    margin:0 0 26px;
+  }
+  .hero p.blurb{
+    max-width:56ch;
+    color:#B9CBE0;
+    font-size:15.5px;
+    margin:0 0 34px;
+  }
+  .hero .actions{ display:flex; gap:14px; flex-wrap:wrap; }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    text-decoration:none;
+    padding:11px 18px;
+    border-radius:8px;
+    border:1.5px solid var(--line);
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .btn.primary{
+    background:var(--amber);
+    color:var(--ink);
+    border-color:var(--amber);
+    font-weight:600;
+  }
+  .btn.primary:hover{ background:#f0b458; }
+  .btn.ghost{ color:var(--paper); }
+  .btn.ghost:hover{ border-color:var(--paper); }
+
+  .coords{
+    position:absolute;
+    top:36px; right:28px;
+    display:flex; flex-direction:column; gap:4px;
+    text-align:right;
+  }
+  .coords span{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:var(--line);
+  }
+
+  section{ padding:64px 0; border-top:1px solid var(--line-dim); }
+
+  h2.section-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:26px;
+    margin:0 0 8px;
+  }
+  .section-sub{
+    color:var(--muted);
+    font-size:14px;
+    margin:0 0 34px;
+  }
+
+  .about-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:40px;
+    align-items:start;
+  }
+  .about-grid p{ color:#C7D6E8; font-size:15px; }
+  .stat-list{ display:flex; flex-direction:column; gap:18px; }
+  .stat{
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-bottom:1px dashed var(--line-dim);
+    padding-bottom:12px;
+  }
+  .stat .k{ font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--muted); }
+  .stat .v{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:15px; }
+
+  .skill-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap:12px;
+  }
+  .skill{
+    border:1px solid var(--line-dim);
+    border-radius:8px;
+    padding:14px 16px;
+    background:var(--ink-soft);
+    transition: border-color 0.15s ease, transform 0.1s ease;
+  }
+  .skill:hover{ border-color:var(--line); transform:translateY(-2px); }
+  .skill .name{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    margin-bottom:4px;
+  }
+  .skill .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+  }
+
+  .project-list{ display:flex; flex-direction:column; gap:2px; }
+  .project{
+    display:grid;
+    grid-template-columns: 90px 1fr auto;
+    gap:20px;
+    align-items:center;
+    padding:20px 18px;
+    border-radius:8px;
+    text-decoration:none;
+    color:inherit;
+    transition: background 0.15s ease;
+  }
+  .project:hover{ background:var(--ink-soft); }
+  .project .idx{ font-family:'IBM Plex Mono', monospace; color:var(--line); font-size:13px; }
+  .project .title{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:16px; margin-bottom:4px; }
+  .project .desc{ color:var(--muted); font-size:13.5px; }
+  .project .go{ font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--amber); white-space:nowrap; }
+
+  footer{
+    padding:56px 0 40px;
+    border-top:1px solid var(--line-dim);
+  }
+  .contact-row{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    flex-wrap:wrap; gap:24px;
+  }
+  footer h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:30px;
+    margin:0 0 10px;
+  }
+  footer p{ color:var(--muted); font-size:14px; margin:0; }
+  .social-links{ display:flex; gap:16px; }
+  .social-links a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    text-decoration:none;
+    color:var(--paper);
+    border-bottom:1px solid var(--line);
+    padding-bottom:2px;
+  }
+  .social-links a:hover{ border-color:var(--amber); color:var(--amber); }
+  .fine-print{
+    margin-top:40px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--line);
+  }
+
+  @media (max-width: 680px){
+    .about-grid{ grid-template-columns: 1fr; }
+    .project{ grid-template-columns: 1fr; gap:6px; }
+    .project .go{ justify-self:start; }
+    .coords{ display:none; }
+    .navlinks{ gap:16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .skill:hover{ transform:none; }
+  }
+</style>
+</head>
+<body class="grid-bg">
+
+<nav>
+  <div class="wrap">
+    <div class="brand">Noor<span>·</span>Eman</div>
+    <div class="navlinks">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <div class="coords mono">
+    <span>LAT 33.6844° N</span>
+    <span>LNG 73.0479° E</span>
+    <span>REV. 01</span>
+  </div>
+
+  <div class="tag-line">
+    <span class="dot"></span>
+    <span class="label">Personal Website — v1.0</span>
+  </div>
+
+  <h1>Hi, I'm <span class="accent">Noor-ul-Eman</span>.<br/>I build things for the web.</h1>
+  <p class="role">Aspiring Web Developer · HTML · CSS · JavaScript</p>
+  <p class="blurb">
+    I'm learning to design and build clean, functional websites from the ground up —
+    turning ideas into interfaces, one project at a time. This page is itself
+    one of those projects.
+  </p>
+
+  <div class="actions">
+    <a class="btn primary" href="#projects">View my work</a>
+    <a class="btn ghost" href="#contact">Get in touch</a>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <h2 class="section-title">About</h2>
+    <p class="section-sub">A short profile — swap this copy for your own story.</p>
+
+    <div class="about-grid">
+      <p>
+        I'm a student and self-taught developer based in Islamabad, currently building
+        my foundation in front-end web development. I enjoy solving small, concrete
+        problems — a form that validates cleanly, a layout that holds up on any
+        screen — and learning by shipping real, working pages rather than just
+        following tutorials.
+      </p>
+
+      <div class="stat-list">
+        <div class="stat"><span class="k">FOCUS</span><span class="v">Front-End Development</span></div>
+        <div class="stat"><span class="k">LOCATION</span><span class="v">Islamabad, Pakistan</span></div>
+        <div class="stat"><span class="k">CURRENTLY</span><span class="v">Learning HTML / CSS / JS</span></div>
+        <div class="stat"><span class="k">INTERESTS</span><span class="v">Design, Writing, Problem-Solving</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <h2 class="section-title">Skills</h2>
+    <p class="section-sub">Tools and languages I'm actively working with.</p>
+
+    <div class="skill-grid">
+      <div class="skill"><div class="name">HTML5</div><div class="tag">Structure</div></div>
+      <div class="skill"><div class="name">CSS3</div><div class="tag">Styling</div></div>
+      <div class="skill"><div class="name">JavaScript</div><div class="tag">Interactivity</div></div>
+      <div class="skill"><div class="name">Git &amp; GitHub</div><div class="tag">Version Control</div></div>
+      <div class="skill"><div class="name">Responsive Design</div><div class="tag">Layout</div></div>
+      <div class="skill"><div class="name">VS Code</div><div class="tag">Tooling</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <h2 class="section-title">Projects</h2>
+    <p class="section-sub">A few things I've built. Replace links with your own repos.</p>
+
+    <div class="project-list">
+      <a class="project" href="https://github.com/Noor-Ul-Emaan/NovaStackhub" target="_blank" rel="noopener">
+        <span class="idx">01</span>
+        <span>
+          <div class="title">Contact Form</div>
+          <div class="desc">Responsive contact form with inline validation — HTML, CSS &amp; JS.</div>
+        </span>
+        <span class="go">View repo →</span>
+      </a>
+      <a class="project" href="https://github.com/Noor-Ul-Emaan/NovaStackhub" target="_blank" rel="noopener">
+        <span class="idx">02</span>
+        <span>
+          <div class="title">Personal Website</div>
+          <div class="desc">This page — a single-file, responsive portfolio site.</div>
+        </span>
+        <span class="go">View repo →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="contact-row">
+      <div>
+        <h2>Let's connect.</h2>
+        <p>Open to opportunities, collaboration, and feedback.</p>
+      </div>
+      <div class="social-links">
+        <a href="https://www.linkedin.com/in/nor-ul-eman/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/Noor-Ul-Emaan" target="_blank" rel="noopener">GitHub</a>
+        <a href="mailto:youremail@example.com">Email</a>
+      </div>
+    </div>
+    <div class="fine-print wrap" style="padding-left:0;">© 2026 Noor-ul-Eman — Built with HTML &amp; CSS.</div>
+  </div>
+</footer>
+
+</body>
+</html>
