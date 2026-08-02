@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pathway — Learn at your own pace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar">
+  <div class="wrap navbar-inner">
+    <div class="brand">Path<span>way</span></div>
+    <div class="navlinks">
+      <a href="#" data-view="catalog" class="nav-link active">Courses</a>
+      <a href="#" data-view="dashboard" class="nav-link">My Progress</a>
+    </div>
+    <button class="auth-btn" id="authBtn">Sign in</button>
+  </div>
+</nav>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authOverlay">
+  <div class="modal">
+    <button class="modal-close" id="authClose">&times;</button>
+    <h3 id="authTitle">Sign in to Pathway</h3>
+    <p class="modal-sub">This is a front-end demo — no real account is created or stored anywhere.</p>
+    <form id="authForm">
+      <div class="field">
+        <label for="authName">Name</label>
+        <input type="text" id="authName" placeholder="Your name" required />
+      </div>
+      <div class="field">
+        <label for="authEmail">Email</label>
+        <input type="email" id="authEmail" placeholder="you@example.com" required />
+      </div>
+      <button type="submit" class="btn primary full">Continue</button>
+    </form>
+  </div>
+</div>
+
+<!-- CATALOG VIEW -->
+<main id="view-catalog" class="view">
+  <header class="hero wrap">
+    <p class="eyebrow">Front-end demo · Course Catalog</p>
+    <h1>Learn skills that<br/><em>actually</em> move you forward.</h1>
+    <p class="lede">Browse courses, track lessons, and pick up right where you left off. Built as the client layer of a MERN-style e-learning platform.</p>
+  </header>
+
+  <div class="wrap">
+    <div class="toolbar">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search courses (e.g. JavaScript, Design)…" />
+      <div class="filter-chips" id="filterChips"></div>
+    </div>
+
+    <div class="course-grid" id="courseGrid"></div>
+  </div>
+</main>
+
+<!-- COURSE DETAIL VIEW -->
+<main id="view-course" class="view hidden">
+  <div class="wrap">
+    <button class="back-link" id="backToCatalog">&larr; Back to courses</button>
+
+    <div class="course-header">
+      <span class="badge" id="courseCategory">Category</span>
+      <h1 id="courseTitle">Course title</h1>
+      <p class="course-meta" id="courseMeta">Instructor · Lessons · Level</p>
+      <p class="course-desc" id="courseDesc">Description</p>
+
+      <div class="progress-block">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="courseProgressFill"></div>
+        </div>
+        <span class="progress-label" id="courseProgressLabel">0% complete</span>
+      </div>
+    </div>
+
+    <div class="course-body">
+      <div class="lesson-list" id="lessonList"></div>
+
+      <aside class="lesson-panel">
+        <div class="video-placeholder" id="lessonVideo">
+          <span>Select a lesson to preview</span>
+        </div>
+        <h3 id="lessonTitle">—</h3>
+        <p id="lessonDesc" class="lesson-desc">Choose a lesson from the list to see its details here.</p>
+        <button class="btn primary full" id="markCompleteBtn" disabled>Mark as complete</button>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<!-- DASHBOARD VIEW -->
+<main id="view-dashboard" class="view hidden">
+  <div class="wrap">
+    <header class="dash-header">
+      <p class="eyebrow">Your learning</p>
+      <h1>My Progress</h1>
+    </header>
+
+    <div class="dash-summary" id="dashSummary"></div>
+
+    <h2 class="section-title">Enrolled courses</h2>
+    <div class="dash-list" id="dashList"></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    Pathway — a front-end e-learning demo. Data resets on page reload (no backend connected yet).
+  </div>
+</footer>
+
+<script src="courses.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
